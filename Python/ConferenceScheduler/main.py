@@ -1,4 +1,4 @@
-def process_input():
+def process_input(file_data=None):
     data = [
         "Writing Fast Tests Against Enterprise Rails 60min",
         "Overdoing it in Python 45min",
@@ -20,6 +20,9 @@ def process_input():
         "A World Without HackerNews 30min",
         "User Interface CSS in Rails Apps 30min"
     ]
+
+    if file_data:
+        data = file_data
 
     lightning_duration = 5
     talks = []
@@ -156,11 +159,24 @@ def print_schedule(schedule):
         print("05:00PM Networking Event")
 
 
-def main():
-    talks, total_talks_duration = process_input()
+def main(file_contents=None):
+    if file_contents:
+        talks, total_talks_duration = process_input(file_contents)
+    else:
+        talks, total_talks_duration = process_input()
     talks_by_duration = sorted(talks, key=lambda x: x[1], reverse=True)
     schedule = organize_talks(talks_by_duration, total_talks_duration)
     print_schedule(schedule)
 
 if __name__ == '__main__':
-    main()
+    import sys
+
+    filename = sys.argv[-1]
+    if filename != sys.argv[0]:
+        with open(filename) as f:
+            content = f.readlines()
+            main(content)
+    else:
+        print("You must pass a file as a command-line argument or "
+              "I'll use hardcoded data instead.")
+        main()
